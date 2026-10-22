@@ -1,0 +1,47 @@
+{
+  "name": "one-step-closer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A local-first, judgment-free Muslim habit tracker with a Chinese interface.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build --webpack && node scripts/build-service-worker.mjs",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit --incremental false",
+    "test": "playwright test",
+    "test:e2e": "npm test",
+    "check": "npm run lint && npm run typecheck && npm run test:tooling && npm run build && npm test",
+    "test:tooling": "node --test scripts/tests/*.test.mjs"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.468.0",
+    "next": "^16.4.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "^20.17.6",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "^16.4.2",
+    "postcss": "^8.5.31",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.6.3",
+    "@tailwindcss/postcss": "^4.3.3",
+    "fast-glob": "file:./vendor/next-lint-glob"
+  },
+  "overrides": {
+    "@next/eslint-plugin-next@16.4.2": {
+      "fast-glob": "$fast-glob"
+    }
+  }
+}

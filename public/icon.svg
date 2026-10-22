@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="One Step Closer icon">
+  <rect width="512" height="512" rx="112" fill="#f7efe0"/>
+  <path d="M96 128h320M96 384h320M128 96v320M384 96v320" stroke="#e2d2b3" stroke-width="18" opacity=".58"/>
+  <path d="M256 88 424 256 256 424 88 256 256 88Z" fill="#e9dcc5" stroke="#c9ad69" stroke-width="14"/>
+  <path d="M256 142 370 256 256 370 142 256 256 142Z" fill="#f8f3ea" stroke="#6b8f75" stroke-width="12"/>
+  <path d="M285 197c-54 8-88 40-98 92 45 7 95-5 123-40 15-19 20-38 22-62-17 2-32 5-47 10Z" fill="#3c6f58"/>
+  <path d="M198 305c33-44 67-64 113-82" fill="none" stroke="#f7efe0" stroke-linecap="round" stroke-width="18"/>
+  <circle cx="256" cy="256" r="196" fill="none" stroke="#f1e6d4" stroke-width="18"/>
+</svg>
