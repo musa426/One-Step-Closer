@@ -10,6 +10,10 @@ This is an early personal project built with Next.js, React, TypeScript, and Tai
 
 [Mobile-width preview](docs/images/mobile.png)
 
+[Getting started (Chinese)](docs/getting-started.md) · [Share feedback](https://github.com/musa426/One-Step-Closer/issues/new?template=usability_feedback.md) · [Changelog](CHANGELOG.md)
+
+A public trial is being prepared and is not yet published. For now, use the local setup below. Feedback is public: use fictional examples and do not attach real records or backup files. Maintainers can use the [voluntary trial checklist (Chinese)](docs/trying-the-app.md).
+
 ## Features
 
 | Page | Purpose |
@@ -44,7 +48,7 @@ npm start -- --hostname 127.0.0.1 --port 3001
 
 Open the production preview at [http://127.0.0.1:3001](http://127.0.0.1:3001). A separate port prevents production offline caches from hiding development changes. The two ports have independent records. If a production worker was previously installed on the development address, unregister that worker and delete its Cache Storage while preserving localStorage; do not clear all site data.
 
-Deployment requires a Next.js hosting environment with Node.js support. Static export for GitHub Pages is not configured. Publishing the source to GitHub does not deploy the application.
+Deployment requires a Next.js hosting environment with Node.js support; see [Vercel deployment and verification (Chinese)](docs/deploying.md). Static export for GitHub Pages is not configured. Publishing the source to GitHub does not deploy the application.
 
 ## Mobile and offline use
 

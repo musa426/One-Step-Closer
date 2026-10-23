@@ -10,6 +10,10 @@
 
 [查看手机宽度示例](docs/images/mobile.png)
 
+[第一次使用](docs/getting-started.md) · [提交使用反馈](https://github.com/musa426/One-Step-Closer/issues/new?template=usability_feedback.md) · [版本变化](CHANGELOG.md)
+
+公开试用入口正在准备，尚未发布。当前可按下方说明在本机运行。反馈是公开的，请使用虚构内容，不要附上真实习惯记录或备份文件。维护者组织试用时可参考[自愿试用清单](docs/trying-the-app.md)。
+
 ## 当前功能
 
 | 页面 | 可以做什么 |
@@ -44,7 +48,7 @@ npm start -- --hostname 127.0.0.1 --port 3001
 
 生产预览打开 [http://127.0.0.1:3001](http://127.0.0.1:3001)。它使用不同端口，避免生产离线缓存遮住开发时的新代码；两个端口的记录互相独立。如果曾在开发地址启用生产缓存，只注销该地址的 service worker 并删除其 Cache Storage，保留 localStorage，不要清除全部网站数据。
 
-部署时需要支持 Node.js 的 Next.js 托管环境。当前没有为 GitHub Pages 配置静态导出；把源码放到 GitHub 不会自动生成可访问的网站。
+部署时需要支持 Node.js 的 Next.js 托管环境，具体步骤见 [Vercel 部署与验证](docs/deploying.md)。当前没有为 GitHub Pages 配置静态导出；把源码放到 GitHub 不会自动生成可访问的网站。
 
 ## 手机与离线使用
 
