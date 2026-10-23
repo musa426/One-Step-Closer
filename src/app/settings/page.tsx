@@ -5,6 +5,7 @@ import { OptionGroup } from "@/components/option-group";
 import { SectionCard } from "@/components/section-card";
 import { useAppData } from "@/components/app-provider";
 import { BackupPanel } from "@/components/backup-panel";
+import { HelpPanel } from "@/components/help-panel";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -89,6 +90,7 @@ export default function SettingsPage() {
         </SectionCard>
       </fieldset>
       <BackupPanel />
+      <HelpPanel />
     </div>
   );
 }
