@@ -49,22 +49,24 @@ export default function PartnerModePage() {
             <div className="grid gap-3 sm:grid-cols-2">
               <Input
                 value={partner.personOne}
-                onChange={(event) =>
-                  setPartner((current) => ({
+                onChange={(event) => {
+                  const personOne = event.target.value;
+                  void setPartner((current) => ({
                     ...current,
-                    personOne: event.target.value
-                  }))
-                }
+                    personOne
+                  }));
+                }}
                 placeholder="我"
               />
               <Input
                 value={partner.personTwo}
-                onChange={(event) =>
-                  setPartner((current) => ({
+                onChange={(event) => {
+                  const personTwo = event.target.value;
+                  void setPartner((current) => ({
                     ...current,
-                    personTwo: event.target.value
-                  }))
-                }
+                    personTwo
+                  }));
+                }}
                 placeholder="同行的人"
               />
             </div>
@@ -73,12 +75,13 @@ export default function PartnerModePage() {
           <SectionCard icon={MessageSquareHeart} title="本周备注" description="可以写下一个彼此都舒服的提醒。">
             <Textarea
               value={partner.note}
-              onChange={(event) =>
-                setPartner((current) => ({
+              onChange={(event) => {
+                const note = event.target.value;
+                void setPartner((current) => ({
                   ...current,
-                  note: event.target.value
-                }))
-              }
+                  note
+                }));
+              }}
               placeholder="例如：这周找一个下班后不太赶的晚上。"
             />
           </SectionCard>
@@ -89,14 +92,15 @@ export default function PartnerModePage() {
             <OptionGroup
               options={goalOptions}
               value={partner.weeklyGoal}
-              onChange={(weeklyGoal) =>
-                setPartner((current) => ({
+              onChange={(weeklyGoal) => {
+                const updatedAt = new Date().toISOString();
+                void setPartner((current) => ({
                   ...current,
                   weeklyGoal,
                   completedThisWeek: false,
-                  updatedAt: new Date().toISOString()
-                }))
-              }
+                  updatedAt
+                }));
+              }}
             />
 
             <button
@@ -107,16 +111,16 @@ export default function PartnerModePage() {
                   ? "border-[hsl(var(--app-primary))] bg-[hsl(var(--app-soft))] text-[hsl(var(--app-primary))]"
                   : "border-[hsl(var(--app-border))] bg-[hsl(var(--app-card))] text-[hsl(var(--app-ink))]"
               )}
-              onClick={() =>
-                setPartner((current) => {
-                  const now = new Date();
+              onClick={() => {
+                const now = new Date();
+                void setPartner((current) => {
                   return {
                     ...current,
                     completedThisWeek: !(current.completedThisWeek && isSameWeek(current.updatedAt, now)),
                     updatedAt: now.toISOString()
                   };
-                })
-              }
+                });
+              }}
               type="button"
             >
               <span>
@@ -131,14 +135,15 @@ export default function PartnerModePage() {
             <Button
               className="w-full"
               variant="secondary"
-              onClick={() =>
-                setPartner((current) => ({
+              onClick={() => {
+                const updatedAt = new Date().toISOString();
+                void setPartner((current) => ({
                   ...current,
                   weeklyGoal: null,
                   completedThisWeek: false,
-                  updatedAt: new Date().toISOString()
-                }))
-              }
+                  updatedAt
+                }));
+              }}
             >
               清空本周目标
             </Button>

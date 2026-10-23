@@ -32,7 +32,7 @@ test("a failed write is visible and does not pretend the new value was saved", a
   await page.evaluate(() => {
     const original = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key, value) {
-      if (key.startsWith("osc:")) throw new DOMException("Storage full", "QuotaExceededError");
+      if (key === "osc:state") throw new DOMException("Storage full", "QuotaExceededError");
       original.call(this, key, value);
     };
   });
@@ -53,6 +53,7 @@ test("sequential updates in two tabs retain both saved places", async ({ page, c
   await expect(page.getByRole("heading", { name: "First café", exact: true })).toBeVisible();
   await second.getByPlaceholder("名称", { exact: true }).fill("Second café");
   await second.getByRole("button", { name: "保存地点" }).click();
+  await expect(second.getByRole("heading", { name: "Second café", exact: true })).toBeVisible();
   await page.reload();
   await expect(page.getByRole("heading", { name: "First café", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Second café", exact: true })).toBeVisible();
@@ -68,7 +69,7 @@ test("a failed place save keeps the draft available to retry", async ({ page }) 
   const originalSetItem = await page.evaluateHandle(() => {
     const original = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key, value) {
-      if (key === "osc:places") throw new DOMException("Storage full", "QuotaExceededError");
+      if (key === "osc:state") throw new DOMException("Storage full", "QuotaExceededError");
       original.call(this, key, value);
     };
     return original;
@@ -78,6 +79,7 @@ test("a failed place save keeps the draft available to retry", async ({ page }) 
   await expect(name).toHaveValue("Keep this café");
   await expect(notes).toHaveValue("Keep these notes");
   expect(await page.evaluate(() => localStorage.getItem("osc:places"))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("osc:state"))).toBeNull();
   await page.evaluate((original) => { Storage.prototype.setItem = original; }, originalSetItem);
   await page.getByRole("button", { name: "保存地点" }).click();
   await expect(page.getByRole("heading", { name: "Keep this café", exact: true })).toBeVisible();
@@ -85,14 +87,69 @@ test("a failed place save keeps the draft available to retry", async ({ page }) 
   await expect(notes).toHaveValue("");
 });
 
-test("existing valid data remains editable without changing storage keys", async ({ page }) => {
+test("a place draft waits for the write lock without clearing or allowing duplicate submissions", async ({ page }) => {
+  await page.goto("/places");
+  const name = page.getByPlaceholder("名称", { exact: true });
+  const notes = page.getByPlaceholder("备注，例如招牌菜、停车、是否适合一起去");
+  const save = page.getByRole("button", { name: "保存地点" });
+  await name.fill("Waiting café");
+  await notes.fill("Keep until committed");
+  await page.evaluate(() => new Promise<void>((acquired) => {
+    void navigator.locks.request("osc:state-write", () => new Promise<void>((release) => {
+      (window as unknown as { releaseTestLock: () => void }).releaseTestLock = release;
+      acquired();
+    }));
+  }));
+  await save.click();
+  await expect(name).toHaveValue("Waiting café");
+  await expect(notes).toHaveValue("Keep until committed");
+  await expect(name).toBeDisabled();
+  await expect(notes).toBeDisabled();
+  await expect(save).toBeDisabled();
+  expect(await page.evaluate(() => localStorage.getItem("osc:state"))).toBeNull();
+  await page.evaluate(() => (window as unknown as { releaseTestLock: () => void }).releaseTestLock());
+  await expect(name).toHaveValue("");
+  await expect(notes).toHaveValue("");
+  await expect(page.getByRole("heading", { name: "Waiting café", exact: true })).toHaveCount(1);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("osc:state")!).data.places.length)).toBe(1);
+});
+
+test("existing valid data remains editable while original legacy records are preserved", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("osc:settings", JSON.stringify({
     appName: "Existing name", mainFocus: "balanced", reminderText: "Hello", theme: "warm"
   })));
   await page.goto("/settings");
   await expect(page.getByPlaceholder("One Step Closer")).toHaveValue("Existing name");
   await page.getByPlaceholder("One Step Closer").fill("Updated name");
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:settings")!).appName)).toBe("Updated name");
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:state") ?? "null")?.data.settings.appName)).toBe("Updated name");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("osc:settings")!).appName)).toBe("Existing name");
+  await page.reload();
+  await expect(page.getByPlaceholder("One Step Closer")).toHaveValue("Updated name");
+});
+
+test("typing reflections and partner fields preserves each character across asynchronous saves", async ({ page }) => {
+  await page.goto("/");
+  const reflection = page.getByPlaceholder("今天有什么让你更靠近、更平静，或只是想记下来的事？");
+  await reflection.pressSequentially("Fictional reflection", { delay: 20 });
+  await expect(reflection).toHaveValue("Fictional reflection");
+  await expect.poll(() => page.evaluate(() => Object.values(JSON.parse(localStorage.getItem("osc:state") ?? "null")?.data.entries ?? {})
+    .map((entry) => (entry as { reflection: string }).reflection))).toEqual(["Fictional reflection"]);
+
+  await page.goto("/partner");
+  const personOne = page.getByPlaceholder("我", { exact: true });
+  const personTwo = page.getByPlaceholder("同行的人", { exact: true });
+  const note = page.getByPlaceholder("例如：这周找一个下班后不太赶的晚上。");
+  await personOne.fill("");
+  await personOne.pressSequentially("Amina", { delay: 20 });
+  await personTwo.fill("");
+  await personTwo.pressSequentially("Yusuf", { delay: 20 });
+  await note.pressSequentially("Fictional note", { delay: 20 });
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:state") ?? "null")?.data.partner))
+    .toMatchObject({ personOne: "Amina", personTwo: "Yusuf", note: "Fictional note" });
+  await page.reload();
+  await expect(personOne).toHaveValue("Amina");
+  await expect(personTwo).toHaveValue("Yusuf");
+  await expect(note).toHaveValue("Fictional note");
 });
 
 test("server-rendered controls cannot be edited before local data is loaded", async ({ browser, baseURL }) => {

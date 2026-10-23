@@ -24,6 +24,7 @@ test("first online visit supports offline reloads of all five pages and saved ed
     if (label === "地点") {
       await page.getByPlaceholder("名称", { exact: true }).fill("Offline café");
       await page.getByRole("button", { name: "保存地点", exact: true }).click();
+      await expect(page.getByRole("status").filter({ hasText: "正在保存" })).toHaveCount(0);
       await page.reload({ waitUntil: "domcontentloaded" });
       await expect(page.getByRole("heading", { name: "Offline café", exact: true })).toBeVisible();
     }
@@ -33,6 +34,7 @@ test("first online visit supports offline reloads of all five pages and saved ed
       const complete = page.getByRole("button", { name: /这周已经一起完成/ });
       await goal.click();
       await complete.click();
+      await expect(page.getByRole("status").filter({ hasText: "正在保存" })).toHaveCount(0);
       await page.reload({ waitUntil: "domcontentloaded" });
       await expect(goal).toHaveAttribute("aria-pressed", "true");
       await expect(complete).toHaveAttribute("aria-pressed", "true");
@@ -40,6 +42,7 @@ test("first online visit supports offline reloads of all five pages and saved ed
   }
   const name = page.getByPlaceholder("One Step Closer");
   await name.fill("Offline demo");
+  await expect(page.getByRole("status").filter({ hasText: "正在保存" })).toHaveCount(0);
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.getByRole("heading", { name: "Offline demo", exact: true })).toBeVisible();
 

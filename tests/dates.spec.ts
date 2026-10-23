@@ -14,11 +14,13 @@ test("an open daily page writes the new day after local midnight", async ({ page
   await openAtSundayNight(page);
   const reflection = page.getByPlaceholder("今天有什么让你更靠近、更平静，或只是想记下来的事？");
   await reflection.fill("Sunday reflection");
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:state") ?? "null")?.data.entries["2026-10-25"]?.reflection))
+    .toBe("Sunday reflection");
   await page.clock.runFor(11_000);
   await expect(reflection).toHaveValue("");
   await reflection.fill("Monday reflection");
 
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:daily-entries") ?? "{}")))
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:state") ?? "null")?.data.entries))
     .toMatchObject({
       "2026-10-25": { reflection: "Sunday reflection" },
       "2026-10-26": { reflection: "Monday reflection" }
@@ -29,11 +31,13 @@ test("returning to the foreground refreshes the daily entry without waiting for 
   await openAtSundayNight(page);
   const reflection = page.getByPlaceholder("今天有什么让你更靠近、更平静，或只是想记下来的事？");
   await reflection.fill("Before sleeping");
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:state") ?? "null")?.data.entries["2026-10-25"]?.reflection))
+    .toBe("Before sleeping");
   await page.clock.setSystemTime(new Date("2026-10-26T09:00:00-04:00"));
   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
   await expect(reflection).toHaveValue("");
   await reflection.fill("After returning");
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:daily-entries") ?? "{}")["2026-10-26"]?.reflection))
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:state") ?? "null")?.data.entries["2026-10-26"]?.reflection))
     .toBe("After returning");
 });
 
@@ -63,6 +67,6 @@ test("a partner goal persists across weeks but its completion does not", async (
   await expect(page.getByRole("button", { name: /一起做一顿清真饭/ })).toHaveAttribute("aria-pressed", "true");
   await completion.click();
   await expect(completion).toHaveAttribute("aria-pressed", "true");
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:partner") ?? "{}")))
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("osc:state") ?? "null")?.data.partner))
     .toMatchObject({ completedThisWeek: true, updatedAt: "2026-10-26T04:00:01.000Z" });
 });

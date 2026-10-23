@@ -137,12 +137,13 @@ export default function DailyCheckInPage() {
           <SectionCard icon={MessageCircleHeart} title="小小觉察" description="可选。只写你注意到的事情。">
             <Textarea
               value={entry.reflection}
-              onChange={(event) =>
-                upsertEntry(getTodayKey(), (current) => ({
+              onChange={(event) => {
+                const reflection = event.target.value;
+                void upsertEntry(getTodayKey(), (current) => ({
                   ...current,
-                  reflection: event.target.value
-                }))
-              }
+                  reflection
+                }));
+              }}
               placeholder="今天有什么让你更靠近、更平静，或只是想记下来的事？"
             />
           </SectionCard>

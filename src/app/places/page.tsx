@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart, MapPin, Plus, Store, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { SectionCard } from "@/components/section-card";
 import { useAppData } from "@/components/app-provider";
 import { Button } from "@/components/ui/button";
@@ -23,11 +23,13 @@ const initialForm = {
 export default function HalalPlacesPage() {
   const { places, setPlaces } = useAppData();
   const [form, setForm] = useState(initialForm);
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
   const sortedPlaces = [...places].sort((a, b) => Number(b.favorite) - Number(a.favorite));
   const canSave = form.name.trim().length > 0;
 
-  function addPlace() {
-    if (!canSave) {
+  async function addPlace() {
+    if (!canSave || savingRef.current) {
       return;
     }
 
@@ -41,15 +43,22 @@ export default function HalalPlacesPage() {
       createdAt: new Date().toISOString()
     };
 
-    if (setPlaces((current) => [nextPlace, ...current])) {
-      setForm(initialForm);
+    savingRef.current = true;
+    setSaving(true);
+    try {
+      if (await setPlaces((current) => [nextPlace, ...current])) {
+        setForm(initialForm);
+      }
+    } finally {
+      savingRef.current = false;
+      setSaving(false);
     }
   }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
       <SectionCard icon={Plus} title="保存一个清真友好地点" description="餐厅、超市、素食选择，都可以先放在这里。">
-        <div className="space-y-3">
+        <fieldset disabled={saving} aria-busy={saving} className="min-w-0 space-y-3">
           <Input
             value={form.name}
             onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
@@ -93,7 +102,7 @@ export default function HalalPlacesPage() {
             <Plus className="h-4 w-4" aria-hidden="true" />
             保存地点
           </Button>
-        </div>
+        </fieldset>
       </SectionCard>
 
       <div className="space-y-4">
