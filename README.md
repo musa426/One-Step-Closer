@@ -10,9 +10,9 @@
 
 [查看手机宽度示例](docs/images/mobile.png)
 
-[第一次使用](docs/getting-started.md) · [提交使用反馈](https://github.com/musa426/One-Step-Closer/issues/new?template=usability_feedback.md) · [版本变化](CHANGELOG.md)
+[打开公开试用版](https://one-step-closer-rho.vercel.app) · [第一次使用](docs/getting-started.md) · [提交使用反馈](https://github.com/musa426/One-Step-Closer/issues/new?template=usability_feedback.md) · [版本变化](CHANGELOG.md)
 
-公开试用入口正在准备，尚未发布。当前可按下方说明在本机运行。反馈是公开的，请使用虚构内容，不要附上真实习惯记录或备份文件。维护者组织试用时可参考[自愿试用清单](docs/trying-the-app.md)。
+首次使用请联网打开试用版，并把固定网址加入书签。无需应用账号；记录保存在当前浏览器，换设备、浏览器或网址不会自动同步，请先导出备份。反馈是公开的，请使用虚构内容，不要附上真实习惯记录或备份文件。维护者组织试用时可参考[自愿试用清单](docs/trying-the-app.md)。
 
 ## 当前功能
 
