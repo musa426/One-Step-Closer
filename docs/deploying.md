@@ -5,7 +5,7 @@
 ## 首次部署
 
 1. 在 Vercel 导入 `musa426/One-Step-Closer`，确认是自己的目标工作区，项目目录为仓库根目录，框架为 Next.js。
-2. 选择与 `.nvmrc` 和 GitHub Actions 一致的 Node.js 22。`vercel.json` 指定 `npm ci` 安装锁定的依赖，执行完整的 `npm run build`。保留 Next.js 默认输出目录，不要改成 `public` 或 `out`。
+2. 检查实际 Node.js 版本。项目的 `engines.node` 为 `>=22`，Vercel 当前会将该范围解析为 24.x，并覆盖控制台的版本选择；`.nvmrc` 和 GitHub Actions 使用 22。以部署构建日志为准，再完成下方部署验证，规则见 [Vercel Node.js 版本说明](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions)。`vercel.json` 指定 `npm ci` 安装锁定的依赖，执行完整的 `npm run build`。保留 Next.js 默认输出目录，不要改成 `public` 或 `out`。
 3. 先确认待部署提交的 GitHub Actions 检查通过。公开版本使用 `main`；开发分支的预览地址用于虚构数据测试。
 4. 检查构建日志：Next.js 构建结束后还应执行 `scripts/build-service-worker.mjs`。只执行 `next build` 会漏掉离线使用所需的 `public/sw.js`；该文件由构建生成，不提交到 Git。
 5. 使用项目固定的生产域名作为公开入口。先验证无需登录 Vercel 就能打开，再将实际网址写入中英文 README 和使用指南。不要把每次构建生成的临时地址作为长期入口。
