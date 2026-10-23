@@ -111,8 +111,9 @@ for (const width of [390, 1280]) {
     await expect.poll(() => save.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe(unfocusedShadow);
     await page.keyboard.press("Enter");
     await expect(page.getByRole("heading", { name: "Demo market", exact: true })).toBeVisible();
-    await expect(page.getByText("Fictional place for a browser test", { exact: true })).toBeVisible();
+    // The optimistic card can appear before the durable save clears the draft.
     await expect(name).toHaveValue("");
+    await expect(page.getByRole("paragraph").filter({ hasText: "Fictional place for a browser test" })).toBeVisible();
     await expect(save).toBeDisabled();
   });
 }

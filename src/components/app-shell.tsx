@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { Navigation } from "@/components/navigation";
 import { useAppData } from "@/components/app-provider";
@@ -7,7 +8,9 @@ import { focusLabels } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { settings, storageReady, storageReadError, storageWriteError } = useAppData();
+  const { settings, storageReady, storageReadError, storageWriteError, storageMessage, storageSaving } = useAppData();
+
+  const pathname = usePathname();
 
   return (
     <div className={cn("app-background min-h-screen text-[hsl(var(--app-ink))]", `theme-${settings.theme}`)}>
@@ -30,16 +33,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </header>
           {storageReadError ? (
             <p role="alert" className="mb-4 rounded-lg border border-[hsl(var(--app-border))] bg-[hsl(var(--app-card))] p-4 text-sm">
-              无法读取本机保存的部分数据。原始内容已保留；为避免覆盖，暂时停止编辑。请刷新后重试，问题仍在时联系维护者。
+              {storageMessage}
             </p>
           ) : storageWriteError ? (
             <p role="alert" className="mb-4 rounded-lg border border-[hsl(var(--app-border))] bg-[hsl(var(--app-card))] p-4 text-sm">
-              保存失败，刚才的更改没有保留。请检查浏览器存储空间或权限后重试。
+              {storageMessage}
+            </p>
+          ) : null}
+          {storageSaving ? (
+            <p role="status" className="mb-4 px-4 text-sm text-[hsl(var(--app-muted))]">
+              正在保存到这台设备，请稍等后再刷新或关闭窗口。
             </p>
           ) : null}
           <main className="page-enter">
             {storageReady ? (
-              <fieldset disabled={storageReadError} className="min-w-0">
+              <fieldset disabled={storageReadError && pathname !== "/settings"} className="min-w-0">
                 {children}
               </fieldset>
             ) : (

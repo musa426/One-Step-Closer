@@ -4,6 +4,7 @@ import { Bell, Palette, SlidersHorizontal, Type } from "lucide-react";
 import { OptionGroup } from "@/components/option-group";
 import { SectionCard } from "@/components/section-card";
 import { useAppData } from "@/components/app-provider";
+import { BackupPanel } from "@/components/backup-panel";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -27,62 +28,67 @@ const themeOptions = [
 ] satisfies { value: ThemeName; label: string; helper: string }[];
 
 export default function SettingsPage() {
-  const { settings, setSettings } = useAppData();
+  const { settings, setSettings, storageReadError } = useAppData();
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <SectionCard icon={Type} title="应用名称" description="可以换成一个更私人、更柔和的名字。">
-        <Input
-          value={settings.appName}
-          onChange={(event) =>
-            setSettings((current) => ({
-              ...current,
-              appName: event.target.value
-            }))
-          }
-          placeholder="One Step Closer"
-        />
-      </SectionCard>
+    <div className="space-y-4">
+      <fieldset disabled={storageReadError} className="grid min-w-0 gap-4 lg:grid-cols-2">
+        <SectionCard icon={Type} title="应用名称" description="可以换成一个更私人、更柔和的名字。">
+          <Input
+            value={settings.appName}
+            onChange={(event) => {
+              const appName = event.target.value;
+              setSettings((current) => ({
+                ...current,
+                appName
+              }));
+            }}
+            placeholder="One Step Closer"
+          />
+        </SectionCard>
 
-      <SectionCard icon={Bell} title="每日提醒文字" description="这句话会出现在今日页面。">
-        <Textarea
-          value={settings.reminderText}
-          onChange={(event) =>
-            setSettings((current) => ({
-              ...current,
-              reminderText: event.target.value
-            }))
-          }
-          placeholder="今天只需要靠近一点点。"
-        />
-      </SectionCard>
+        <SectionCard icon={Bell} title="每日提醒文字" description="这句话会出现在今日页面。">
+          <Textarea
+            value={settings.reminderText}
+            onChange={(event) => {
+              const reminderText = event.target.value;
+              setSettings((current) => ({
+                ...current,
+                reminderText
+              }));
+            }}
+            placeholder="今天只需要靠近一点点。"
+          />
+        </SectionCard>
 
-      <SectionCard icon={SlidersHorizontal} title="主要关注" description="调整顶部显示的关注方向。">
-        <OptionGroup
-          options={focusOptions}
-          value={settings.mainFocus}
-          onChange={(mainFocus) =>
-            setSettings((current) => ({
-              ...current,
-              mainFocus
-            }))
-          }
-        />
-      </SectionCard>
+        <SectionCard icon={SlidersHorizontal} title="主要关注" description="调整顶部显示的关注方向。">
+          <OptionGroup
+            options={focusOptions}
+            value={settings.mainFocus}
+            onChange={(mainFocus) =>
+              setSettings((current) => ({
+                ...current,
+                mainFocus
+              }))
+            }
+          />
+        </SectionCard>
 
-      <SectionCard icon={Palette} title="主题" description="选择一个更适合你当下状态的视觉气质。">
-        <OptionGroup
-          columns="one"
-          options={themeOptions}
-          value={settings.theme}
-          onChange={(theme) =>
-            setSettings((current) => ({
-              ...current,
-              theme
-            }))
-          }
-        />
-      </SectionCard>
+        <SectionCard icon={Palette} title="主题" description="选择一个更适合你当下状态的视觉气质。">
+          <OptionGroup
+            columns="one"
+            options={themeOptions}
+            value={settings.theme}
+            onChange={(theme) =>
+              setSettings((current) => ({
+                ...current,
+                theme
+              }))
+            }
+          />
+        </SectionCard>
+      </fieldset>
+      <BackupPanel />
     </div>
   );
 }
