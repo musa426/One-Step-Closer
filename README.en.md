@@ -10,9 +10,9 @@ This is an early personal project built with Next.js, React, TypeScript, and Tai
 
 [Mobile-width preview](docs/images/mobile.png)
 
-[Getting started (Chinese)](docs/getting-started.md) · [Share feedback](https://github.com/musa426/One-Step-Closer/issues/new?template=usability_feedback.md) · [Changelog](CHANGELOG.md)
+[Open the public trial](https://one-step-closer-rho.vercel.app) · [Getting started (Chinese)](docs/getting-started.md) · [Share feedback](https://github.com/musa426/One-Step-Closer/issues/new?template=usability_feedback.md) · [Changelog](CHANGELOG.md)
 
-A public trial is being prepared and is not yet published. For now, use the local setup below. Feedback is public: use fictional examples and do not attach real records or backup files. Maintainers can use the [voluntary trial checklist (Chinese)](docs/trying-the-app.md).
+Open the trial online for the first visit and bookmark its stable address. No app account is required. Records stay in the current browser; another device, browser, or address does not sync automatically, so export a backup first. Feedback is public: use fictional examples and do not attach real records or backup files. Maintainers can use the [voluntary trial checklist (Chinese)](docs/trying-the-app.md).
 
 ## Features
 

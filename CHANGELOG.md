@@ -1,8 +1,8 @@
 # 版本变化 / Changelog
 
-只记录实际完成的功能与维护工作。`Unreleased` 表示尚未整理为正式发布版本，不代表公开试用地址已上线。正式发布时再填写真实版本号、日期和验证结果。
+记录功能与维护变化。发布包和日期以 [GitHub Releases](https://github.com/musa426/One-Step-Closer/releases) 为准，公开入口见 [README](README.md)。
 
-## Unreleased
+## 0.1.0 — 2026-10-23
 
 ### 当前功能 / Available in the code
 
@@ -14,10 +14,12 @@
 - 保存中的状态提示与离开页面提醒请求；浏览器仍可能不显示提醒，强制关闭不能保证未保存更改被保留。
 - 针对备份格式、存储迁移、恢复失败、并发修改和生产离线行为的回归用例，以及 GitHub Actions 检查流程。具体运行结果应以对应提交的检查记录为准。
 
-### 本轮试用准备 / Trial preparation
+### 使用与维护 / Usage and maintenance
 
+- 提供固定 HTTPS [公开试用入口](https://one-step-closer-rho.vercel.app)，无需应用账号；记录继续保存在当前浏览器。
 - 设置页增加使用说明与公开反馈入口，显示应用版本，并提醒不要上传真实记录或备份。
 - 增加[第一次使用指南](docs/getting-started.md)，解释本地记录、固定网址、下载备份、恢复、离线和更新操作。
 - 增加[自愿试用清单](docs/trying-the-app.md)与[试用反馈模板](.github/ISSUE_TEMPLATE/usability_feedback.md)，只收集环境、任务完成情况、困难和建议，不要求真实习惯记录或备份。
 - 增加 Vercel 构建配置和[部署验证说明](docs/deploying.md)，使用锁定依赖和完整生产构建生成离线缓存。
-- 试用方案尚不构成外部用户数量或已完成设备验证的证据。公开入口与正式发布状态以 README 和 GitHub Releases 的实际记录为准。
+- 修正并发地点保存回归测试的等待条件：等待两个窗口保存成功后才刷新，避免把乐观显示当成已持久化。产品存储逻辑未改动。
+- 试用方案尚不构成外部用户数量或已完成设备验证的证据；iOS/Android 真机验证仍待完成。

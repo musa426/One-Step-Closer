@@ -85,6 +85,11 @@ test("simultaneous new-version place saves retain both records", async ({ page, 
     page.getByRole("button", { name: "保存地点", exact: true }).click(),
     second.getByRole("button", { name: "保存地点", exact: true }).click()
   ]);
+  // Titles update optimistically; each form clears only after its save succeeds.
+  await Promise.all([
+    expect(page.getByPlaceholder("名称", { exact: true })).toHaveValue(""),
+    expect(second.getByPlaceholder("名称", { exact: true })).toHaveValue("")
+  ]);
   await expect(page.getByRole("heading", { name: "First fictional café", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Second fictional café", exact: true })).toBeVisible();
   await page.reload();
